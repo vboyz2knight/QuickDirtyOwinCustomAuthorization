@@ -1,0 +1,93 @@
+﻿@Model MVC.Models.ApiCallModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div>
+    <label>Jquery Call to Anynomous Call</label>
+    <button id="anynomous">Anynomous Call.</button>
+    <div id="resultA"></div>
+</div>
+
+<div>
+    <label>Jquery Call to NonAnynomous Call</label>
+    <button id="nonAnynomous">NonAnynomous Call.</button>
+    <div id="resultB"></div>
+</div>
+<br />
+<div>
+    <label>Post To ApiOwin</label>
+    @using (Html.BeginForm("Index", "ApiCall", FormMethod.Post))
+    {
+        <input type="text" id="key" name="key" value="1234"/>
+        <button>Post To ApiOwin</button>
+    }
+
+    @{ 
+        if (Model != null && Model.output != null)
+        {
+            <label>@Model.output</label>
+        }
+    }
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        var uri = 'http://localhost:25109/customers/Anonymous';
+        var uri2 = 'http://localhost:25109/customers/Get';
+
+        $(document).ready(function () {
+
+            //$('#anynomous').click(function () {
+
+            //    $.ajax({
+            //        type: 'GET',
+            //        cache: false,
+            //        url: uri,
+            //        success: function (data) { alert(data[0].Name); }
+            //    });
+            //});
+        });
+
+        
+
+        var demo = (function () {            
+
+            $('#anynomous').click(callAnynomous);
+            $('#nonAnynomous').click(callNonAnynomous);
+
+            function callAnynomous() {
+                // Send an AJAX request
+                $.getJSON(uri)
+                    .done(function (data) {
+                        alert(data[0].Name);
+                    });
+            };
+
+            function callNonAnynomous() {
+                // Send an AJAX request
+                var request = $.ajax({
+                    type: 'GET',
+                    cache: false,
+                    url: uri2                   
+                });
+
+                request.done(function (msg) { alert(msg); });
+
+                request.fail(function (jqXHR, textStatus) {
+                    alert("Request failed: " + textStatus);
+                });
+            };
+
+            return {
+                CallAnynomous: callAnynomous,
+                CallNonAnynomous : callNonAnynomous
+            }
+        })();
+    
+    </script>
+}
